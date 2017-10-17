@@ -1,12 +1,14 @@
 package mq
 
 import (
-	"conf"
 	"fmt"
-	logger "github.com/Sirupsen/logrus"
-	"github.com/streadway/amqp"
 	"time"
+	logger "github.com/Sirupsen/logrus"
+
 	"utils"
+	"conf"
+
+	"github.com/streadway/amqp"
 )
 
 const (
@@ -198,11 +200,6 @@ func (r *RabbitmqConfig) ResetConn() error {
 
 */
 func (r *RabbitmqConfig) Pull(f func(string)) error {
-	// defer func() {
-	// 	if r := recover(); r != nil {
-	// 		r.CloseConn()
-	// 	}
-	// }()
 
 	if err := r.InitConn(); err != nil {
 		r.CloseConn()
@@ -224,15 +221,6 @@ func (r *RabbitmqConfig) Pull(f func(string)) error {
 		logger.Errorf("Failed to register a consumer, %s", err)
 		return conf.ErrCodeRabbimqConnNotOpen
 	}
-
-	// for {
-	// 	d, ok := <-msgs
-	// 	if !ok {
-	// 		time.Second(100 * time.Millisecond)
-	// 		continue
-	// 	}
-	// 	f(string(d.Body))
-	// }
 
 	// 有严重的性能问题, 因为不断的初始化timer chan
 	timer := time.NewTimer(3 * time.Second)
